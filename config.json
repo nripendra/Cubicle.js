@@ -1,0 +1,4 @@
+{
+ "projectName": "Cubicle.js",
+ "bundles": [{"bundleName": "Cubicle.min.js", "files": ["Cubicle.js"], "minify": true}]
+}
