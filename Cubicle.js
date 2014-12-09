@@ -41,7 +41,7 @@
         return rootObject;
     };
 
-	//#nrip - "Cubicle" still clutters the global namespace :P
+    //#nrip - "Cubicle" still clutters the global namespace :P
     global["Cubicle"] = function () {
         var args = arguments,
             len = args.length,
