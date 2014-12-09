@@ -62,8 +62,8 @@
         }
     };
 
-    Cubicle(function(Import, Export){
-        return Export("messaging", {
+    Cubicle(function(invite, announce){
+        return announce("messaging", {
             init: function () {
                 this._list = [];
             },
