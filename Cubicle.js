@@ -63,5 +63,34 @@
 			}
 		}
 	};
+	
+	Cubicle(function(Import, Export){
+		return Export("messaging", {
+			init: function () {
+				this._list = [];
+			},
+			listen: function(channel, obj, callback) {
+				this._list.push({"channel": channel, "context": obj, "callback": callback});
+			},
+			unlisten: function(channel, obj ) {
+				for( var i = 0, len = this._list.length; i < len; i++ ) {
+					var listener = this._list[i];
+					if(listener.channel === channel && listener.context === obj){
+						this._list.splice( i, 1 );
+						return true;
+					}
+				}
+				return false;
+			},
+			publish: function(channel, message) {
+				for( var i = 0, len = this._list.length; i < len; i++ ) {
+					var listener = this._list[i];
+					if(listener.channel === channel){
+						listener.callback.apply(listener.context, [message]);
+					}
+				}
+			}
+		});
+	});	
 })(this);
 
