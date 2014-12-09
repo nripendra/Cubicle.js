@@ -1,18 +1,11 @@
 ﻿(function (global) {
-	//Use register to 'register' a cubical, and require to retrieve a module.
-	//Nested namespacing is supported
-	//      register("MyCompany.ClassName", {init: function(){ ... }, add: function(a,b){ .. }}); 
-	// and inside other modules to use MyCompany.ClassName do:
-	//      var myCubicle = require("MyCompany.ClassName");
-	//      myCubicle.add(1,2).. etc
-
-	var cubicles = {}
+	var cubicles = {};
 
 	var isFunction = function (variable) {
 		return (typeof variable === "function");
 	};
 
-	var register = function (cubicleName, cubicle, reigsterToGlobal) {
+	var exportCubicle = function (cubicleName, cubicle, reigsterToGlobal) {
 
 		var namespaceParts = cubicleName.split('.');
 
@@ -33,7 +26,7 @@
 		return cubicle;
 	};
 
-	var require = function (cubicleName) {
+	var importCubicle = function (cubicleName) {
 		var namespaceParts = cubicleName.split('.');
 		var rootObject = cubicles;
 
@@ -61,7 +54,7 @@
 			var callback = args[i];
 			if (isFunction(callback)) {
 				var f = function () { }
-				var cubicle = callback.apply(global, [register, require]);
+				var cubicle = callback.apply(global, [importCubicle, exportCubicle]);
 				if (cubicle) {
 					if (cubicle.init && isFunction(cubicle.init)) {
 						cubicle.init();
