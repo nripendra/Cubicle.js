@@ -5,6 +5,14 @@ A small light-weight javascript library for defining modular components, 3kb unm
 
 # Getting Started
 
+You can include Cubicle.js through rawgit.com url
+```Html
+<script type="application/javascript" src="https://cdn.rawgit.com/nripendra/Cubicle.js/v0.1.0/Cubicle.js"></script>
+```
+Or, simply download the Cubicle.js file and place on your server, and link to it, if you want to selfhost the file. I'm planning for a nuget package for visualstudio users, but not quite there yet.
+
+## Introducing Cubicle.
+
 A cubicle is a small container that provides certain amount of privacy. Defining a cubicle is as easy as this:
 
 ```Javascript
