@@ -9,24 +9,24 @@ You can include Cubicle.js through rawgit.com url
 ```Html
 <script type="application/javascript" src="https://cdn.rawgit.com/nripendra/Cubicle.js/v0.1.0/Cubicle.js"></script>
 ```
-Or, simply download the Cubicle.js file and place on your server, and link to it, if you want to selfhost the file. I'm planning for a nuget package for visualstudio users, but not quite there yet.
+Or, simply download the Cubicle.js file and place on your server, and link to it, if you want to self-host the file. I'm planning for a nuget package for visual-studio users, but not quite there yet.
 
-## Introducing Cubicle.
+## Introducing cubicle.
 
 A cubicle is a small container that provides certain amount of privacy. Defining a cubicle is as easy as this:
 
 ```Javascript
-Cubicle(function(invite, announce){
+cubicle(function(invite, announce){
   
 });
 ```
-Just call 'Cubicle' function, and pass an anonymouse function as shown above. The annonymous function gets two helper functions as the parameter: invite and announce. The 'invite' function can be used to get hold of worker in other cubicles, provided that the worker in other cubicle has announced itself.
+Just call 'cubicle' function, and pass an anonymous function as shown above. The annonymous function gets two helper functions as the parameter: invite and announce. The 'invite' function can be used to get hold of worker in other cubicles, provided that the worker in other cubicle has announced itself.
 
 ## What is a worker?
-A worker is the main module that works inside the cubicle. The worker is the main thing that does the actual work. A worker can have 'init' method, for the purpose of constructor. And the annonymous function should always return the worker, e.g:
+A worker is the main module that works inside the cubicle. The worker is the main thing that does the actual work. A worker can have 'init' method, for the purpose of constructor. And the anonymous function should always return the worker, e.g:
 
 ```Javascript
-Cubicle(function(invite, announce){
+cubicle(function(invite, announce){
   var worker = {
     "init": function(){
         // this is the constructor..
@@ -40,7 +40,7 @@ Cubicle(function(invite, announce){
 In a normal situation worker cannot work alone, it will require help from other workers, and it needs to help others in return. The way for worker to announce that it is available for helping others is to announce itself, as shown here:
 
 ```Javascript
-Cubicle(function(invite, announce){
+cubicle(function(invite, announce){
   var worker = {
     "init": function(){
         // this is the constructor..
@@ -59,7 +59,7 @@ Note that we are returning as soon as calling announce, it is possible because a
 As mentioned earlier one worker alone may not be able to do all the work, so it needs to invite worker in other cubicle for help. Here's and example which calls worker1 above inside another cubicle.
 
 ```Javascript
-Cubicle(function(invite, announce){
+cubicle(function(invite, announce){
   var worker = {
     "init": function(){
         var helper = invite("worker1");
@@ -74,10 +74,10 @@ It is very important to notice that both cubicles never messes with global names
 
 ## But I want to mess the global namespace :P
 
-Absolutely!! Some times we may want to create Cubicle that is not all pervasive, i.e. allow the module (worker) to be available anywhere out side Cubicles. Just pass true as the last parameter in announce, like this:
+Absolutely!! Some times we may want to create cubicle that is not all pervasive, i.e. allow the module (worker) to be available anywhere out side cubicles. Just pass true as the last parameter in announce, like this:
 
 ```Javascript
-Cubicle(function(invite, announce){
+cubicle(function(invite, announce){
   var worker = {
     "init": function(){
         
