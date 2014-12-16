@@ -51,11 +51,20 @@
             var callback = args[i];
             if (isFunction(callback)) {
                 var f = function () { },
-                    cubicle = callback.apply(global, [importCubicle, exportCubicle]);
+                    worker = callback.apply(global, [importCubicle, exportCubicle]);
                     
-                if (cubicle) {
-                    if (cubicle.init && isFunction(cubicle.init)) {
-                        cubicle.init();
+                if (worker) {
+                    if (worker.init && isFunction(worker.init)) {
+                        worker.init();
+                    }
+                    else if(worker.constructor.name == "Promise"){
+                        worker.then(function(actualWorker){
+                            if(actualWorker){
+                                if(actualWorker.init && isFunction(actualWorker.init)){
+                                    actualWorker.init();
+                                }
+                            }
+                        });
                     }
                 }
             }
