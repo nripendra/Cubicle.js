@@ -1,105 +1,109 @@
 ﻿(function (global, globalName) {
-    var workers = {};
+    'use strict';
+    var workers = {},
+        isFunction = function (variable) {
+            return (typeof variable === "function");
+        },
+        announceWorker = function (cubicleName, worker, reigsterToGlobal) {
 
-    var isFunction = function (variable) {
-        return (typeof variable === "function");
-    };
+            var j,
+                namespaceParts = cubicleName.split('.'),
+                rootObject = (reigsterToGlobal === true) ? global : workers,
+                currentPart,
+                ns;
 
-    var announceWorker = function (cubicleName, worker, reigsterToGlobal) {
-
-        var namespaceParts = cubicleName.split('.'),
-            rootObject = (reigsterToGlobal === true) ? global : workers;
-
-        for (var j = 0; j < namespaceParts.length - 1; j++) {
-            var currentPart = namespaceParts[j],
+            for (j = 0; j < namespaceParts.length - 1; j++) {
+                currentPart = namespaceParts[j];
                 ns = rootObject[currentPart];
-            if (!ns) {
-                ns = rootObject[currentPart] = {};
+                if (!ns) {
+                    ns = rootObject[currentPart] = {};
+                }
+                rootObject = ns;
             }
-            rootObject = ns;
-        }
 
-        rootObject[namespaceParts[namespaceParts.length - 1]] = worker;
+            rootObject[namespaceParts[namespaceParts.length - 1]] = worker;
 
-        return worker;
-    };
+            return worker;
+        },
+        inviteWorker = function (cubicleName) {
+            var j,
+                namespaceParts = cubicleName.split('.'),
+                rootObject = workers,
+                currentPart,
+                ns;
 
-    var inviteWorker = function (cubicleName) {
-        var namespaceParts = cubicleName.split('.'),
-            rootObject = workers;
-
-        for (var j = 0; j < namespaceParts.length; j++) {
-            var currentPart = namespaceParts[j],
+            for (j = 0; j < namespaceParts.length; j++) {
+                currentPart = namespaceParts[j];
                 ns = rootObject[currentPart];
 
-            rootObject = ns;
+                rootObject = ns;
 
-            if (!ns) {
-                break;
+                if (!ns) {
+                    break;
+                }
             }
-        }
-        return rootObject;
-    };
-
-    var Cubicle = function () {
-        var args = arguments,
-            len = args.length,
-            i = 0;
-
-        for (i = 0; i < len; i++) {
-            var callback = args[i];
-            if (isFunction(callback)) {
-                var f = function () { },
-                    worker = callback.apply(global, [inviteWorker, announceWorker]);
-                    
-                if (worker) {
-                    if (worker.init && isFunction(worker.init)) {
-                        worker.init();
+            return rootObject;
+        },
+        cubicle = function () {
+            var args = arguments,
+                len = args.length,
+                i = 0,
+                callback,
+                worker,
+                processActualWorker = function (actualWorker) {
+                    if (actualWorker) {
+                        if (actualWorker.init && isFunction(actualWorker.init)) {
+                            actualWorker.init();
+                        }
                     }
-                    else if(worker.constructor.name == "Promise"){
-                        worker.then(function(actualWorker){
-                            if(actualWorker){
-                                if(actualWorker.init && isFunction(actualWorker.init)){
-                                    actualWorker.init();
-                                }
-                            }
-                        });
+                };
+
+            for (i = 0; i < len; i++) {
+                callback = args[i];
+                if (isFunction(callback)) {
+                    worker = callback.apply(global, [inviteWorker, announceWorker]);
+                    if (worker) {
+                        if (worker.init && isFunction(worker.init)) {
+                            worker.init();
+                        } else if (worker.constructor.name === "Promise") {
+                            worker.then(processActualWorker);
+                        }
                     }
                 }
             }
-        }
-    };
-
-    Cubicle(function(invite, announce){
+        };
+    /*jslint unparam: true, node: true */
+    cubicle(function (invite, announce) {
         return announce("messaging", {
             init: function () {
-                this._list = [];
+                this.list = [];
             },
-            listen: function(channel, obj, callback) {
-                this._list.push({"channel": channel, "context": obj, "callback": callback});
+            listen: function (channel, obj, callback) {
+                this.list.push({"channel": channel, "context": obj, "callback": callback});
             },
-            unlisten: function(channel, obj ) {
-                for( var i = 0, len = this._list.length; i < len; i++ ) {
-                    var listener = this._list[i];
-                    if(listener.channel === channel && listener.context === obj){
-                        this._list.splice( i, 1 );
+            unlisten: function (channel, obj) {
+                var listener, i, len;
+                for (i = 0, len = this.list.length; i < len; i++) {
+                    listener = this.list[i];
+                    if (listener.channel === channel && listener.context === obj) {
+                        this.list.splice(i, 1);
                         return true;
                     }
                 }
                 return false;
             },
-            publish: function(channel, message) {
-                for( var i = 0, len = this._list.length; i < len; i++ ) {
-                    var listener = this._list[i];
-                    if(listener.channel === channel){
+            publish: function (channel, message) {
+                var listener, i, len;
+                for (i = 0, len = this.list.length; i < len; i++) {
+                    listener = this.list[i];
+                    if (listener.channel === channel) {
                         listener.callback.apply(listener.context, [message]);
                     }
                 }
             }
         });
-    });	
-    
+    });
     //#nrip - "Cubicle" still clutters the global namespace :P
-    global[globalName] = Cubicle;
-})(this, "Cubicle");
+    global[globalName] = cubicle;
+}(this, "Cubicle"));
 
