@@ -103,7 +103,7 @@
             }
         });
     });
-    //#nrip - "Cubicle" still clutters the global namespace :P
+    //#nrip - "cubicle" still clutters the global namespace :P
     global[globalName] = cubicle;
-}(this, "Cubicle"));
+}(this, "cubicle"));
 
