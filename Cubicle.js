@@ -5,7 +5,7 @@
         return (typeof variable === "function");
     };
 
-    var exportCubicle = function (cubicleName, worker, reigsterToGlobal) {
+    var announceWorker = function (cubicleName, worker, reigsterToGlobal) {
 
         var namespaceParts = cubicleName.split('.'),
             rootObject = (reigsterToGlobal === true) ? global : workers;
@@ -24,7 +24,7 @@
         return worker;
     };
 
-    var importCubicle = function (cubicleName) {
+    var inviteWorker = function (cubicleName) {
         var namespaceParts = cubicleName.split('.'),
             rootObject = workers;
 
@@ -50,7 +50,7 @@
             var callback = args[i];
             if (isFunction(callback)) {
                 var f = function () { },
-                    worker = callback.apply(global, [importCubicle, exportCubicle]);
+                    worker = callback.apply(global, [inviteWorker, announceWorker]);
                     
                 if (worker) {
                     if (worker.init && isFunction(worker.init)) {
