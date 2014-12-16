@@ -1,13 +1,13 @@
 Cubicle.js
 ==========
 
-A small light-weight javascript library for defining modular components, 3kb unminimized (93 loc) as of Dec 9 - 2014.
+A small light-weight javascript library for defining modular components, 4kb unminimized (108 loc) as of Dec 16 - 2014.
 
 # Getting Started
 
 You can include Cubicle.js through rawgit.com url
 ```Html
-<script type="application/javascript" src="https://cdn.rawgit.com/nripendra/Cubicle.js/v0.1.0/Cubicle.js"></script>
+<script type="application/javascript" src="https://cdn.rawgit.com/nripendra/Cubicle.js/v0.2.0/Cubicle.min.js"></script>
 ```
 Or, simply download the Cubicle.js file and place on your server, and link to it, if you want to self-host the file. I'm planning for a nuget package for visual-studio users, but not quite there yet.
 
