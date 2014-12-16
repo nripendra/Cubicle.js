@@ -1,4 +1,4 @@
-﻿(function (global) {
+﻿(function (global, globalName) {
     var cubicles = {};
 
     var isFunction = function (variable) {
@@ -41,8 +41,7 @@
         return rootObject;
     };
 
-    //#nrip - "Cubicle" still clutters the global namespace :P
-    global["Cubicle"] = function () {
+    var Cubicle = function () {
         var args = arguments,
             len = args.length,
             i = 0;
@@ -99,5 +98,8 @@
             }
         });
     });	
-})(this);
+    
+    //#nrip - "Cubicle" still clutters the global namespace :P
+    global[globalName] = Cubicle;
+})(this, "Cubicle");
 
