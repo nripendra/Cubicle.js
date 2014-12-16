@@ -1,14 +1,14 @@
 ﻿(function (global, globalName) {
-    var cubicles = {};
+    var workers = {};
 
     var isFunction = function (variable) {
         return (typeof variable === "function");
     };
 
-    var exportCubicle = function (cubicleName, cubicle, reigsterToGlobal) {
+    var exportCubicle = function (cubicleName, worker, reigsterToGlobal) {
 
         var namespaceParts = cubicleName.split('.'),
-            rootObject = (reigsterToGlobal === true) ? global : cubicles;
+            rootObject = (reigsterToGlobal === true) ? global : workers;
 
         for (var j = 0; j < namespaceParts.length - 1; j++) {
             var currentPart = namespaceParts[j],
@@ -19,14 +19,14 @@
             rootObject = ns;
         }
 
-        rootObject[namespaceParts[namespaceParts.length - 1]] = cubicle;
+        rootObject[namespaceParts[namespaceParts.length - 1]] = worker;
 
-        return cubicle;
+        return worker;
     };
 
     var importCubicle = function (cubicleName) {
         var namespaceParts = cubicleName.split('.'),
-            rootObject = cubicles;
+            rootObject = workers;
 
         for (var j = 0; j < namespaceParts.length; j++) {
             var currentPart = namespaceParts[j],
